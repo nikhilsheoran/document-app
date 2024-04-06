@@ -1,18 +1,6 @@
 import { mutation } from "./_generated/server";
 
-/**
- * Insert or update the user in a Convex table then return the document's ID.
- *
- * The `UserIdentity.tokenIdentifier` string is a stable and unique value we use
- * to look up identities.
- *
- * Keep in mind that `UserIdentity` has a number of optional fields, the
- * presence of which depends on the identity provider chosen. It's up to the
- * application developer to determine which ones are available and to decide
- * which of those need to be persisted. For Clerk the fields are determined
- * by the JWT token's Claims config.
- */
-export const store = mutation({
+export const createUserifNot = mutation({
   args: {},
   handler: async (ctx) => {
     const identity = await ctx.auth.getUserIdentity();
@@ -24,7 +12,7 @@ export const store = mutation({
     const user = await ctx.db
       .query("users")
       .withIndex("by_token", (q) =>
-        q.eq("tokenIdentifier", identity.tokenIdentifier),
+        q.eq("tokenIdentifier", identity.tokenIdentifier)
       )
       .unique();
     if (user !== null) {
@@ -34,9 +22,25 @@ export const store = mutation({
       }
       return user._id;
     }
+
+    const lastPSRN = (
+      await ctx.db
+        .query("users")
+        .withIndex("by_creation_time")
+        .order("desc")
+        .first()
+    )?.psrn;
+    const newPSRN = lastPSRN
+      ? "G" + ("00" + (parseInt(lastPSRN.substr(1)) + 1)).slice(-3)
+      : "G001";
+
     // If it's a new identity, create a new `User`.
     return await ctx.db.insert("users", {
       name: identity.name!,
+      designation: "Faculty",
+      userEmail: identity.email!,
+      entitlementLimit: 25000,
+      psrn: newPSRN,
       tokenIdentifier: identity.tokenIdentifier,
     });
   },
