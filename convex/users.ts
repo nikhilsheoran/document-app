@@ -20,7 +20,7 @@ export const createUserifNot = mutation({
       if (user.name !== identity.name) {
         await ctx.db.patch(user._id, { name: identity.name });
       }
-      return user._id;
+      return user;
     }
 
     const lastPSRN = (

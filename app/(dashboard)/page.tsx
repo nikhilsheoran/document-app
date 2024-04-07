@@ -5,72 +5,118 @@ import NewNFAButton from "@/components/auth/NewNFAButton";
 import { Button } from "@/components/ui/button";
 import { api } from "@/convex/_generated/api";
 import { useMutation, useQuery } from "convex/react";
-
+import {
+  Table,
+  TableBody,
+  TableCaption,
+  TableCell,
+  TableFooter,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { Input } from "@/components/ui/input";
+import Link from "next/link";
+import { useEffect, useState } from "react";
+import { updateNfaHOD } from "@/convex/nfa";
 const DashboardPage = () => {
   const nfas = useQuery(api.nfa.readNfa);
+  const reqNoDetails = useMutation(api.nfa.getNfaDetails);
+  const createUserifNot = useMutation(api.users.createUserifNot);
 
+  const [documentId, setDocumentId] = useState<any>();
+  const updateNfaHOD = useMutation(api.nfa.updateNfaHOD);
+const [userDetails,setUserDetails] = useState<any>();
+  const newtempfunc = async (reqNo:number) => {
+
+    const details = await reqNoDetails({ reqNo: Number(reqNo) });
+    details && setDocumentId(details._id);
+  };
+
+  const handleSignature = async (nfa: any) => {
+    await newtempfunc(nfa.reqNo);
+    const newReqNo = updateNfaHOD({
+      id: documentId,
+    });
+    fetch('/api/send',{method:'POST'})
+  };
+
+  const getUserDetails = async () => {
+    const userDetails = await createUserifNot();
+    setUserDetails(userDetails);
+  };
+
+  useEffect(()=>{
+    getUserDetails();
+  },[])
   return (
     <div className="h-full w-full flex flex-col items-center p-4 gap-8">
       <div className="w-full flex justify-between items-center">
         <div className="flex flex-col gap-1">
-          <h2 className="font-bold text-3xl">
-          Documents
-          </h2>
-        View and manage all of your documents.
+          <h2 className="font-bold text-3xl">Documents</h2>
+          View and manage all of your documents.
         </div>
-        <NewNFAButton />
-      </div>
-      <div
-        className="w-full flex-1 flex flex-col justify-start items-center rounded-lg border border-dullOutline h-8"
-        style={{
-          boxShadow:
-            "0px 1px 2px 0px rgba(16, 24, 40, 0.06), 0px 1px 3px 0px rgba(16, 24, 40, 0.10)",
-        }}
-      >
-        <div className="w-full grid sm:grid-cols-[1fr_150px_150px_150px] grid-cols-[1fr_120px] overflow-y-auto">
-          <div className="w-full h-[44px] bg-lightGray text-secondaryBlack flex items-center justify-start px-6 border-b border-dullOutline font-medium text-[12px]">
-            Name
-          </div>
-          <div className="w-full h-[44px] bg-lightGray text-secondaryBlack sm:flex hidden items-center justify-center px-6 border-b border-dullOutline font-medium text-[12px]">
-            Date Submitted
-          </div>
-          <div className="w-full h-[44px] bg-lightGray text-secondaryBlack sm:flex hidden items-center justify-center px-6 border-b border-dullOutline font-medium text-[12px]">
-            Status
-          </div>
-          <div className="w-full h-[44px] bg-lightGray text-secondaryBlack flex items-center justify-center px-6 border-b border-dullOutline font-medium text-[12px]">
-            Actions
-          </div>
+        <div className="flex gap-4 items-center">
+          <NewNFAButton />
+          <UserAuthenticator />
         </div>
-        {nfas && (
-          <div className="flex flex-col w-full h-full justify-start items-center overflow-y-auto flex-1">
-            {nfas.length === 0 ? (
-              <div className="flex flex-col justify-center items-center h-full font-medium gap-6">
-                You don&apos;t have any projects.
-                <Button variant={"outline"}>hehe</Button>
-              </div>
-            ) : (
-              <div className="w-full">
-                {nfas.toReversed().map((nfa, index) => (
-                  <div className="w-full" key={index}>
-                    <div className="w-full grid sm:grid-cols-[1fr_100px_140px_120px] grid-cols-[1fr_120px] hover:bg-lightGray">
-                      <div className="w-full h-[120px] text-secondaryBlack sm:flex hidden items-center justify-center px-6 border-b border-dullOutline font-medium text-sm">
-                        {nfa.userEmail}
-                      </div>
-                      <div className="w-full h-[120px] text-secondaryBlack sm:flex hidden items-center justify-center px-6 border-b border-dullOutline font-medium text-sm">{`${new Date(nfa._creationTime as unknown as Date).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" })}`}</div>
-                      <div className="w-full h-[120px] text-secondaryBlack flex gap-4 items-center justify-end pr-4 border-b border-dullOutline font-medium text-sm">
-                        <Button variant="destructive">hehe</Button>
-                <Button variant="secondary">Secondary</Button>
-
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
-        )}
       </div>
-      <UserAuthenticator />
+      <div className="w-fit mx-auto flex flex-col justify-start items-center rounded-lg border border-dullOutline">
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead className="w-[100px] text-center">ReqNo</TableHead>
+              <TableHead className="text-center">Date Submitted</TableHead>
+              <TableHead className="text-center">Type</TableHead>
+              <TableHead className="text-center">Status</TableHead>
+              <TableHead className="text-center">Actions</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {nfas &&
+              nfas.map((nfa) => (
+                <TableRow key={nfa._id} className="text-center">
+                  <TableCell className="font-medium">{nfa.reqNo}</TableCell>
+                  <TableCell>
+                    {`${new Date(nfa._creationTime).toLocaleDateString(
+                      "en-IN",
+                      {
+                        year: "numeric",
+                        month: "numeric",
+                        day: "numeric",
+                      }
+                    )}`}
+                  </TableCell>
+                  <TableCell>
+                    {nfa.type == "nfapa"
+                      ? "Professional Allowance"
+                      : nfa.type == "nfapur"
+                        ? "Purchase"
+                        : nfa.type == "nfabillsr"
+                          ? "Forwarding Bills for SRCD"
+                          : ""}
+                  </TableCell>
+                  <TableCell>{nfa.status}</TableCell>
+                  <TableCell className="text-right flex gap-2">
+                    <Link
+                      href={`${nfa.type == "nfapa" ? "/nfapa/" : nfa.type == "nfapur" ? "/nfapur/" : nfa.type == "nfabillsr" ? "/nfabillsr/" : ""}${nfa.reqNo}`}
+                    >
+                      <Button variant={"secondary"}>View</Button>
+                    </Link>
+                   {userDetails && userDetails.designation == "HOD" && nfa.status != "approved" && <Button
+                      variant={"pretty"}
+                      onClick={() => {
+                        handleSignature(nfa);
+                      }}
+                    >
+                      Sign
+                    </Button>}
+                  </TableCell>
+                </TableRow>
+              ))}
+          </TableBody>
+        </Table>
+      </div>
     </div>
   );
 };

@@ -18,7 +18,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        <ConvexClientProvider>{children}</ConvexClientProvider>
+        <ConvexClientProvider>
+          <div className="max-w-[1100px] mx-auto w-full h-screen">{children}
+            </div></ConvexClientProvider>
       </body>
     </html>
   );

@@ -13,7 +13,7 @@ import Link from "next/link";
 const newNFAButton = () => {
     return ( <DropdownMenu>
         <DropdownMenuTrigger>
-          <Button variant="pretty" className="flex items-center gap-2">
+          <Button variant="pretty" size={"sm"} className="flex items-center gap-2">
             <Plus />
             Request NFA
           </Button>
@@ -23,9 +23,11 @@ const newNFAButton = () => {
           <DropdownMenuSeparator />
           <Link href="/nfapa">
           <DropdownMenuItem>Professional Allowance</DropdownMenuItem>
-          </Link>
+          </Link><Link href="/nfabillsr">
           <DropdownMenuItem>Forwarding Bills for SRCD</DropdownMenuItem>
+          </Link><Link href="/nfapur">
           <DropdownMenuItem>Purchase</DropdownMenuItem>
+          </Link>
         </DropdownMenuContent>
       </DropdownMenu> );
 }
