@@ -1,56 +1,83 @@
-# Document Approval Web Application
+# Document Approval Web Application Database Schema
 
-This project is a web application for document approval, specifically Non-Financial Advances (NFAs). The database schema consists of two tables, `nfa` and `users`.
+## Overview
 
-## NFA Table
+This project defines a database schema for a document approval web application. It consists of two main tables: `nfa` and `users`. Let's dive into each of them.
 
-The `nfa` table stores information related to Non-Financial Advances, including details such as agency name, budget details, amounts, dates, remarks, and more. It has the following fields:
+---
 
-- `details` (object): An object containing various details related to the NFA.
- - `agencyName` (string, optional): The name of the agency.
- - `amountSpent` (float64, optional): The amount spent.
- - `amtInWords` (string, optional): The amount in words.
- - `balance` (float64, optional): The remaining balance.
- - `billAmount` (float64, optional): The bill amount.
- - `budgetCode` (string, optional): The budget code.
- - `budgetHead` (string, optional): The budget head.
- - `budgetedAmount` (float64, optional): The budgeted amount.
- - `date` (string, optional): The date.
- - `grandTotal` (float64, optional): The grand total.
- - `gst` (float64, optional): The GST amount.
- - `nfaNo` (float64, optional): The NFA number.
- - `projectTitle` (string, optional): The project title.
- - `remarks` (string, optional): Remarks related to the NFA.
- - `requisitionAmount` (float64, optional): The requisition amount.
- - `rows` (array of objects): An array containing details of individual items or expenses.
-   - `advance` (float64, optional): The advance amount.
-   - `billAmt` (float64, optional): The bill amount.
-   - `billNo` (string, optional): The bill number.
-   - `cashMemo` (string, optional): The cash memo.
-   - `conferenceTravelAmt` (float64, optional): The conference travel amount.
-   - `date` (string, optional): The date.
-   - `description` (string, optional): The description.
-   - `otherTravelAmount` (float64, optional): The other travel amount.
-   - `partyName` (string, optional): The party name.
-   - `poNo` (float64, optional): The purchase order number.
-   - `srNo` (float64): The serial number.
- - `sanctionedAmount` (float64, optional): The sanctioned amount.
- - `subTotal` (float64, optional): The subtotal amount.
- - `total` (float64, optional): The total amount.
-- `reqNo` (float64): The requisition number.
-- `status` (string): The status of the NFA.
-- `type` (string, optional): The type of NFA.
-- `userEmail` (string): The email of the user who created the NFA.
+### Table: `nfa` (Non-Financial Approval)
 
-## Users Table
+The `nfa` table stores information related to non-financial approvals. Here are the complete details for each field:
 
-The `users` table stores information about users of the application. It has the following fields:
+1. **`details`** (Optional Object):
+    - `agencyName`: The name of the approving agency.
+    - `amountSpent`: The amount spent (if applicable).
+    - `amtInWords`: The amount in words (if applicable).
+    - `balance`: The remaining balance.
+    - `billAmount`: The bill amount.
+    - `budgetCode`: The budget code.
+    - `budgetHead`: The budget head.
+    - `budgetedAmount`: The budgeted amount.
+    - `date`: The date of approval.
+    - `grandTotal`: The grand total.
+    - `gst`: The Goods and Services Tax (GST) amount.
+    - `nfaNo`: The non-financial approval number.
+    - `projectTitle`: The title of the project.
+    - `remarks`: Any additional remarks.
+    - `requisitionAmount`: The requested amount.
+    - `rows`: An array of individual approval rows, each containing:
+        - `advance`: Advance amount.
+        - `billAmt`: Bill amount.
+        - `billNo`: Bill number.
+        - `cashMemo`: Cash memo details.
+        - `conferenceTravelAmt`: Amount related to conference travel.
+        - `date`: Date of the approval row.
+        - `description`: Description of the approval item.
+        - `otherTravelAmount`: Amount related to other travel.
+        - `partyName`: Name of the party involved.
+        - `poNo`: Purchase order number.
+        - `srNo`: Serial number.
+    - `sanctionedAmount`: The sanctioned approval amount.
+    - `subTotal`: Subtotal of all approval amounts.
+    - `total`: Total approval amount.
 
-- `designation` (string): The designation of the user.
-- `entitlementLimit` (float64): The entitlement limit for the user.
-- `name` (string): The name of the user.
-- `psrn` (string): The PSRN (Permanent Staff Record Number) of the user.
-- `tokenIdentifier` (string): The token identifier for the user.
-- `userEmail` (string): The email of the user.
+2. **Other Fields**:
+    - `reqNo`: Request number.
+    - `status`: Approval status.
+    - `type`: Type of approval.
+    - `userEmail`: User's email address.
 
-This database schema is designed to store and manage Non-Financial Advances, along with user information. The `nfa` table holds detailed information about each NFA, including financial details, budget information, and individual item/expense details. The `users` table maintains user-specific data such as designation, entitlement limit, and authentication details.
+### Table: `users`
+
+The `users` table contains information about users interacting with the application. Here are the complete details for each field:
+
+1. `designation`: The user's job title or designation.
+2. `entitlementLimit`: The user's entitlement limit.
+3. `name`: User's full name.
+4. `psrn`: User's unique identifier (e.g., employee ID).
+5. `tokenIdentifier`: A token identifier (if applicable).
+6. `userEmail`: User's email address.
+
+---
+
+## Getting Started
+
+To use these schemas, follow these steps:
+
+1. Clone this repository or navigate to the appropriate folder.
+2. Refer to the README file for each table to understand its purpose and how to use the SQL scripts.
+
+Feel free to customize and adapt these schemas to your specific requirements!
+
+---
+
+*Note: This README provides a high-level overview. For detailed SQL scripts and additional information, explore the actual files in the repository.*
+
+---
+
+!GitHub Repository
+
+View Repository
+
+Feel free to modify and enhance this README as needed for your project. Good luck with your document approval web application! 🚀
